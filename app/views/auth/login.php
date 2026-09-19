@@ -1,59 +1,61 @@
 <main class="login-page">
-    <section class="login-card">
-        <span class="kicker">HP BUSINESS</span>
+    <section class="login-card neo-card-animated">
+        <div class="auth-brand">
+            <span class="brand-mark">▣</span>
+            <div>
+                <b>HP BUSINESS</b>
+                <small>OPERATIONS DESK</small>
+            </div>
+        </div>
 
-        <?php if ($hasUser): ?>
-            <h1 style="text-align: center;">MASUK</h1>
+        <span class="kicker">#WELCOME BACK</span>
+        <h1>Masuk ke akun Anda.</h1>
+        <p class="auth-copy">Kelola inventaris HP, transaksi pembelian, dan penjualan dari satu dashboard terpadu.</p>
 
-            <?php if ($message = flash()): ?>
-                <p class="flash"><?= e($message) ?></p>
-            <?php endif; ?>
-
-            <form method="post" action="login">
-                <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
-
-                <label>
-                    Email
-                    <input name="email" type="email" required>
-                </label>
-
-                <label>
-                    Kata sandi
-                    <input name="password" type="password" required>
-                </label>
-
-                <button class="button blue" type="submit" style="text-align: center;">Masuk dengan email →</button>
-            </form>
-        <?php else: ?>
-            <h1 style="text-align: center;">BUAT AKUN</h1>
-            <p style="text-align: center;">Mulai dengan data bisnis Anda sendiri</p>
-
-            <?php if ($message = flash()): ?>
-                <p class="flash"><?= e($message) ?></p>
-            <?php endif; ?>
-
-            <form method="post" action="setup">
-                <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
-
-                <label>
-                    Nama
-                    <input name="name" required>
-                </label>
-
-                <label>
-                    Email
-                    <input name="email" type="email" required>
-                </label>
-
-                <label>
-                    Kata sandi
-                    <input name="password" type="password" minlength="8" required>
-                </label>
-
-                <button class="button blue" type="submit" style="text-align: center;">BUAT AKUN DAN MULAI →</button>
-            </form>
+        <?php if ($message = flash()): ?>
+            <div class="flash-alert" role="alert">
+                <span class="flash-icon">⚡</span>
+                <span class="flash-text"><?= e($message) ?></span>
+                <button class="flash-close" onclick="this.parentElement.remove()">✕</button>
+            </div>
         <?php endif; ?>
 
-        <p class="muted">Google Sign-In dapat ditambahkan setelah Client ID OAuth tersedia.</p>
+        <?php if ($currentUser): ?>
+            <div class="signed-in-panel">
+                <b>Anda sedang masuk sebagai <?= e($currentUser['name']) ?>.</b>
+                <span>Pilih opsi di bawah untuk melanjutkan ke aplikasi atau keluar akun:</span>
+                <div class="signed-in-actions">
+                    <a class="button blue" href="<?= e(url()) ?>">→ Buka Dashboard</a>
+                    <a class="button pink" href="<?= e(url('logout')) ?>">⎋ Keluar Akun</a>
+                </div>
+            </div>
+        <?php else: ?>
+            <form method="post" action="<?= e(url('login')) ?>" class="auth-form">
+                <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+
+                <label>
+                    <span>Email Terdaftar</span>
+                    <input name="email" type="email" autocomplete="email" placeholder="nama@email.com" required>
+                </label>
+
+                <label>
+                    <span>Kata Sandi (Password)</span>
+                    <input name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+                </label>
+
+                <button class="button blue submit-btn" type="submit">
+                    <span>→</span> Masuk ke Dashboard
+                </button>
+            </form>
+
+            <div class="auth-switch-box">
+                <p>Belum memiliki akun operasional?</p>
+                <a class="button yellow" href="<?= e(url('register')) ?>">＋ Buat Akun Baru Sekarang</a>
+            </div>
+        <?php endif; ?>
+
+        <div class="auth-footer-note">
+            <small>🔒 Sistem Dilindungi Enkripsi &amp; Validasi CSRF</small>
+        </div>
     </section>
 </main>
