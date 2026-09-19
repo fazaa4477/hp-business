@@ -1,0 +1,42 @@
+<svg width="460" height="340" viewBox="0 0 460 340" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ilustrasi tumpukan ponsel Neo-Brutalism" class="neo-device-svg">
+  <!-- Phone 1 (Yellow - Back Left) -->
+  <g class="svg-device-layer svg-layer-yellow" transform-origin="182 202">
+    <rect x="91" y="92" width="183" height="220" rx="20" fill="#FFE66D" stroke="#101010" stroke-width="8" transform="rotate(-13 91 92)"/>
+    <rect x="110" y="112" width="40" height="12" rx="6" fill="#101010" transform="rotate(-13 91 92)"/>
+  </g>
+
+  <!-- Phone 2 (White - Back Right) -->
+  <g class="svg-device-layer svg-layer-white" transform-origin="281 139">
+    <rect x="190" y="29" width="183" height="220" rx="20" fill="#FFFFFF" stroke="#101010" stroke-width="8" transform="rotate(11 190 29)"/>
+    <rect x="250" y="45" width="45" height="12" rx="6" fill="#101010" transform="rotate(11 190 29)"/>
+  </g>
+
+  <!-- Phone 3 (Blue - Front Center) -->
+  <g class="svg-device-layer svg-layer-blue" transform-origin="227 176">
+    <rect x="136" y="66" width="183" height="220" rx="20" fill="#8ED8FF" stroke="#101010" stroke-width="8"/>
+    <!-- Camera Module -->
+    <rect x="150" y="80" width="125" height="38" rx="12" fill="#FFFFFF" stroke="#101010" stroke-width="5"/>
+    <circle cx="170" cy="99" r="11" fill="#101010" class="svg-camera-dot svg-camera-1"/>
+    <circle cx="212" cy="99" r="11" fill="#101010" class="svg-camera-dot svg-camera-2"/>
+    <circle cx="254" cy="99" r="11" fill="#101010" class="svg-camera-dot svg-camera-3"/>
+    <circle cx="172" cy="97" r="3" fill="#8ED8FF"/>
+    <circle cx="214" cy="97" r="3" fill="#8ED8FF"/>
+    <circle cx="256" cy="97" r="3" fill="#8ED8FF"/>
+    <!-- Screen Accent Lines -->
+    <path d="M165 160h125M165 190h85M165 220h110" stroke="#101010" stroke-width="8" stroke-linecap="round" class="svg-screen-line"/>
+    <!-- Screen Notch/Speaker -->
+    <rect x="200" y="74" width="55" height="6" rx="3" fill="#101010"/>
+  </g>
+
+  <!-- Floating Decorative Badges -->
+  <!-- Pink Diamond -->
+  <g class="svg-floating-diamond" transform-origin="350 246">
+    <path d="M330 266l20-40 20 40-20 40-20-40Z" fill="#FF9EBC" stroke="#101010" stroke-width="6"/>
+    <circle cx="350" cy="246" r="6" fill="#101010"/>
+  </g>
+
+  <!-- Mint Star / Sparkle -->
+  <g class="svg-floating-star" transform-origin="105 70">
+    <path d="M105 45l8 17 17 8-17 8-8 17-8-17-17-8 17-8 8-17Z" fill="#B9F5D0" stroke="#101010" stroke-width="5"/>
+  </g>
+</svg>

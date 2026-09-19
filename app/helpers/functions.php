@@ -20,10 +20,15 @@ function render(string $view, array $data = []): void
     require __DIR__ . '/../views/layouts/main.php';
 }
 
-function redirect(string $path): never
+function redirect(string $path = ''): never
 {
-    header('Location: ' . $path);
+    header('Location: ' . url($path));
     exit;
+}
+
+function url(string $path = ''): string
+{
+    return APP_URL . ($path === '' ? '/' : '/' . ltrim($path, '/'));
 }
 
 function csrf_token(): string
