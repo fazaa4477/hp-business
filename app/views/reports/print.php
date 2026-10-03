@@ -252,9 +252,10 @@
             </div>
         </div>
         <div class="report-meta">
-            <b>DOKUMEN RESMI BISNIS</b><br>
+            <b>DOKUMEN RESMI KEUANGAN</b><br>
+            Bisnis Owner: <b>Irtadho zainul falah</b><br>
             Tanggal Cetak: <?= e($printedAt) ?><br>
-            Operator: <b><?= e($user['name']) ?></b>
+            Dicetak Oleh: <b><?= e($user['name'] ?? 'Irtadho zainul falah') ?></b>
         </div>
     </header>
 
@@ -388,16 +389,16 @@
     <!-- Sign-off Block -->
     <div class="signatures">
         <div class="sig-box">
-            <span>Dibuat Oleh,</span>
+            <span>Dibuat / Dicetak Oleh,</span>
             <div class="sig-line"></div>
-            <span class="sig-name"><?= e($user['name']) ?></span>
-            <small>Administrator</small>
+            <span class="sig-name"><?= e($user['name'] ?? 'Petugas') ?></span>
+            <small><?= e(($user['role'] ?? '') === 'owner' ? 'Bisnis Owner' : 'Pengelola Administrasi') ?></small>
         </div>
         <div class="sig-box">
             <span>Mengetahui &amp; Menyetujui,</span>
             <div class="sig-line"></div>
-            <span class="sig-name">Pemilik Bisnis (Owner)</span>
-            <small>HP Business</small>
+            <span class="sig-name">Irtadho zainul falah</span>
+            <small>Bisnis Owner (Pemilik Usaha)</small>
         </div>
     </div>
 

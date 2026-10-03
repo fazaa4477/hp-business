@@ -800,7 +800,7 @@ h1 {
 }
 
 /* ==========================================
-   STATS SECTION
+   STATS SECTION (KOTAK TRANSAKSI & RINGKASAN METRIK)
    ========================================== */
 .stats {
   display: grid;
@@ -809,56 +809,213 @@ h1 {
   margin-bottom: 28px;
 }
 
+.stats-reports {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.stat,
 .stat-card {
-  padding: 20px;
+  padding: 22px 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 130px;
+  min-height: 140px;
+  background: var(--white);
+  border: var(--line);
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
   transition: transform var(--transition), box-shadow var(--transition);
 }
 
+.stat:hover,
 .stat-card:hover {
   transform: translate(-3px, -3px);
   box-shadow: var(--shadow-lg);
 }
 
+.stat.yellow, .stat-card.yellow { background: var(--yellow) !important; }
+.stat.mint, .stat-card.mint { background: var(--mint) !important; }
+.stat.pink, .stat-card.pink { background: var(--pink) !important; }
+.stat.blue, .stat-card.blue { background: var(--blue) !important; }
+.stat.purple, .stat-card.purple { background: var(--purple) !important; }
+
 .stat-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 10.5px;
+  font-size: 11px;
   letter-spacing: 0.9px;
+  font-weight: 800;
+  margin-bottom: 10px;
+  color: var(--ink);
+}
+
+.stat-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
 }
 
 .stat-corner-tag {
   background: var(--ink);
   color: var(--white);
-  padding: 2px 6px;
-  font-size: 9px;
+  padding: 3px 8px;
+  font-size: 9.5px;
+  font-weight: 800;
   letter-spacing: 1px;
+  border: 1px solid var(--ink);
+  box-shadow: 1.5px 1.5px 0 rgba(0, 0, 0, 0.25);
 }
 
-.stat-card b {
-  font-size: 32px;
-  letter-spacing: -2px;
-  margin: 12px 0 4px;
-  line-height: 1.1;
+.stat-body {
+  margin: 6px 0;
 }
 
-.stat-card b small {
-  font-size: 14px;
+.stat b,
+.stat-card b,
+.stat-number {
+  font-size: clamp(24px, 2.6vw, 34px);
+  letter-spacing: -1.5px;
+  margin: 6px 0 4px;
+  line-height: 1.15;
+  display: block;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.stat b small,
+.stat-card b small,
+.stat-number small {
+  font-size: 13.5px;
   letter-spacing: 0;
+  font-weight: 700;
+  margin-left: 4px;
 }
 
+.stat-footer,
+.stat small,
 .stat-card small {
-  font-size: 11px;
-  opacity: 0.85;
+  font-size: 11.5px;
+  font-weight: 600;
+  opacity: 0.88;
+  line-height: 1.4;
+  color: #1a1a1a;
 }
 
-.stat.yellow { background: var(--yellow); }
-.stat.mint { background: var(--mint); }
-.stat.pink { background: var(--pink); }
+.stat-sub {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+/* ==========================================
+   OWNER IDENTITY & EXPORT ACTION BARS
+   ========================================== */
+.owner-header-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  margin-bottom: 22px;
+  background: var(--white);
+  border: var(--line);
+  box-shadow: var(--shadow);
+  flex-wrap: wrap;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.owner-header-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.owner-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.owner-name {
+  margin: 6px 0 2px;
+  font-size: clamp(22px, 3.2vw, 30px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--ink);
+}
+
+.owner-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: #333;
+  font-weight: 600;
+}
+
+.owner-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.owner-date-pill {
+  font-size: 11.5px;
+  font-weight: 700;
+  background: var(--soft);
+  padding: 4px 10px;
+  border: var(--line-thin);
+}
+
+.report-export-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  background: var(--white);
+  border: var(--line);
+  box-shadow: var(--shadow);
+  flex-wrap: wrap;
+}
+
+.report-export-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 580px;
+}
+
+.report-export-info b {
+  font-size: 15px;
+  letter-spacing: -0.3px;
+}
+
+.report-export-info p {
+  margin: 0;
+  font-size: 12.5px;
+  color: #444;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.report-export-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 800;
+}
 
 /* ==========================================
    DASHBOARD GRID & PANELS
@@ -1400,6 +1557,26 @@ textarea:focus {
 
   .user-chip-name {
     display: none;
+  }
+
+  .owner-header-card,
+  .report-export-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 16px;
+  }
+
+  .owner-header-right {
+    align-items: flex-start;
+  }
+
+  .report-export-actions {
+    width: 100%;
+  }
+
+  .report-export-actions .button {
+    width: 100%;
+    justify-content: center;
   }
 }
 

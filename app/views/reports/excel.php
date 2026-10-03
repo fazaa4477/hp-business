@@ -42,7 +42,7 @@
     <td colspan="10" class="subtitle">LAPORAN KINERJA KEUANGAN &amp; OPERASIONAL PENJUALAN</td>
   </tr>
   <tr>
-    <td colspan="10" class="subtitle">Tanggal Ekspor: <?= e($printedAt) ?> | Operator: <?= e($user['name']) ?></td>
+    <td colspan="10" class="subtitle">Tanggal Ekspor: <?= e($printedAt) ?> | Bisnis Owner: Irtadho zainul falah | Dicetak Oleh: <?= e($user['name']) ?></td>
   </tr>
   <tr><td colspan="10"></td></tr>
 </table>
@@ -196,14 +196,14 @@
   <tr><td colspan="8"></td></tr>
   <tr>
     <td colspan="4" class="text-center">
-      Dibuat Oleh,<br><br><br><br>
-      <b>( <?= e($user['name']) ?> )</b><br>
-      Administrator
+      Dibuat / Dicetak Oleh,<br><br><br><br>
+      <b>( <?= e($user['name'] ?? 'Petugas') ?> )</b><br>
+      Pengelola Administrasi
     </td>
     <td colspan="4" class="text-center">
       Mengetahui &amp; Menyetujui,<br><br><br><br>
-      <b>( .................................................. )</b><br>
-      Pemilik Bisnis (Owner)
+      <b>( Irtadho zainul falah )</b><br>
+      Bisnis Owner (Pemilik Usaha)
     </td>
   </tr>
 </table>

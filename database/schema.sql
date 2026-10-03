@@ -13,6 +13,8 @@ USE hp_business;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
+DROP TABLE IF EXISTS financial_transactions;
+DROP TABLE IF EXISTS unit_services;
 DROP TABLE IF EXISTS stock_movements;
 DROP TABLE IF EXISTS sale_items;
 DROP TABLE IF EXISTS sales;

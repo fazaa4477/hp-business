@@ -226,6 +226,88 @@ class Business
         )->fetchAll();
     }
 
+    public function findUnit(int $id): ?array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT u.*, p.brand, p.model, p.variant 
+             FROM product_units u 
+             INNER JOIN products p ON p.id = u.product_id 
+             WHERE u.id = ? LIMIT 1"
+        );
+        $stmt->execute([$id]);
+        return $stmt->fetch() ?: null;
+    }
+
+    public function updateUnit(int $id, array $data): void
+    {
+        $unit = $this->findUnit($id);
+        if (!$unit) {
+            throw new RuntimeException('Data unit HP tidak ditemukan.');
+        }
+
+        $imei = trim($data['imei'] ?? $unit['imei']);
+        if (strlen($imei) < 10) {
+            throw new InvalidArgumentException('Nomor IMEI minimal 10 digit.');
+        }
+
+        if ($imei !== $unit['imei']) {
+            $stmt = $this->pdo->prepare("SELECT id FROM product_units WHERE imei = ? AND id != ?");
+            $stmt->execute([$imei, $id]);
+            if ($stmt->fetch()) {
+                throw new RuntimeException("IMEI $imei sudah digunakan unit lain.");
+            }
+        }
+
+        $status = $data['status'] ?? $unit['status'];
+        if (!in_array($status, ['available', 'sold', 'returned', 'damaged'], true)) {
+            $status = $unit['status'];
+        }
+
+        $sellingPrice = (float)($data['selling_price'] ?? $unit['selling_price']);
+        $purchasePrice = isset($data['purchase_price']) ? (float)$data['purchase_price'] : (float)$unit['purchase_price'];
+
+        $stmt = $this->pdo->prepare(
+            "UPDATE product_units 
+             SET imei = ?, battery_health = ?, screen_condition = ?, body_condition = ?, completeness = ?, condition_notes = ?, purchase_price = ?, selling_price = ?, status = ?
+             WHERE id = ?"
+        );
+        $stmt->execute([
+            $imei,
+            isset($data['battery_health']) && $data['battery_health'] !== '' ? (float)$data['battery_health'] : null,
+            trim($data['screen_condition'] ?? '') ?: null,
+            trim($data['body_condition'] ?? '') ?: null,
+            trim($data['completeness'] ?? '') ?: null,
+            trim($data['condition_notes'] ?? '') ?: null,
+            $purchasePrice,
+            $sellingPrice,
+            $status,
+            $id
+        ]);
+    }
+
+    public function deleteUnit(int $id): void
+    {
+        $unit = $this->findUnit($id);
+        if (!$unit) {
+            throw new RuntimeException('Data unit HP tidak ditemukan.');
+        }
+        if ($unit['status'] === 'sold') {
+            throw new RuntimeException('Unit HP sudah berstatus terjual, tidak dapat dihapus.');
+        }
+
+        $this->pdo->beginTransaction();
+        try {
+            $this->pdo->prepare("DELETE FROM stock_movements WHERE product_unit_id = ?")->execute([$id]);
+            $this->pdo->prepare("DELETE FROM unit_services WHERE product_unit_id = ?")->execute([$id]);
+            $this->pdo->prepare("DELETE FROM purchase_items WHERE product_unit_id = ?")->execute([$id]);
+            $this->pdo->prepare("DELETE FROM product_units WHERE id = ?")->execute([$id]);
+            $this->pdo->commit();
+        } catch (Throwable $e) {
+            $this->pdo->rollBack();
+            throw $e;
+        }
+    }
+
     // ==========================================
     // PURCHASES (PEMBELIAN HP)
     // ==========================================
@@ -766,5 +848,54 @@ class Business
         $code = 'FIN-' . date('Ymd-His') . '-' . random_int(10, 99);
         $this->pdo->prepare('INSERT INTO financial_transactions (transaction_code, transaction_date, transaction_type, cash_flow, amount, description, created_by) VALUES (?, CURDATE(), ?, ?, ?, ?, ?)')
             ->execute([$code, $type, $flow, (float)$data['amount'], trim($data['description']), $_SESSION['user']['id'] ?? null]);
+    }
+
+    public function findFinance(int $id): ?array
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM financial_transactions WHERE id = ? LIMIT 1");
+        $stmt->execute([$id]);
+        return $stmt->fetch() ?: null;
+    }
+
+    public function updateFinance(int $id, array $data): void
+    {
+        $finance = $this->findFinance($id);
+        if (!$finance) {
+            throw new RuntimeException('Data transaksi kas tidak ditemukan.');
+        }
+
+        $type = $data['transaction_type'] ?? $finance['transaction_type'];
+        $flow = in_array($type, ['capital'], true) ? 'in' : 'out';
+        $amount = (float)($data['amount'] ?? $finance['amount']);
+        $description = trim($data['description'] ?? $finance['description']);
+        $date = trim($data['transaction_date'] ?? $finance['transaction_date']);
+
+        if (!in_array($type, ['capital', 'expense', 'withdrawal', 'service', 'adjustment'], true) || $amount <= 0 || $description === '') {
+            throw new InvalidArgumentException('Isi jenis transaksi, nominal valid (>0), dan keterangan.');
+        }
+
+        $stmt = $this->pdo->prepare(
+            "UPDATE financial_transactions 
+             SET transaction_type = ?, cash_flow = ?, amount = ?, description = ?, transaction_date = ? 
+             WHERE id = ?"
+        );
+        $stmt->execute([$type, $flow, $amount, $description, $date ?: date('Y-m-d'), $id]);
+    }
+
+    public function deleteFinance(int $id): void
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM financial_transactions WHERE id = ?");
+        $stmt->execute([$id]);
+    }
+
+    public function financeSummary(): array
+    {
+        $in = (float) $this->pdo->query("SELECT COALESCE(SUM(amount), 0) FROM financial_transactions WHERE cash_flow = 'in'")->fetchColumn();
+        $out = (float) $this->pdo->query("SELECT COALESCE(SUM(amount), 0) FROM financial_transactions WHERE cash_flow = 'out'")->fetchColumn();
+        return [
+            'total_in' => $in,
+            'total_out' => $out,
+            'balance' => $in - $out,
+        ];
     }
 }

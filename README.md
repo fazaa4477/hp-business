@@ -26,11 +26,12 @@ Dashboard mengambil metrik secara langsung dari tabel `customers`, `product_unit
 
 ## Fitur yang sudah berjalan
 
-- Login satu pengguna dengan email dan password (tanpa pembatasan role di aplikasi).
-- CRUD tambah data produk, supplier, dan pelanggan.
-- Pembelian HP: otomatis membuat unit ber-IMEI, pembelian, detail pembelian, dan pergerakan stok masuk dalam satu transaksi database.
-- Penjualan HP: hanya dapat memilih unit tersedia, otomatis menghitung profit, mengubah status unit menjadi `sold`, dan mencatat stok keluar.
-- Inventory dengan pencarian IMEI/model serta laporan penjualan dasar.
+- Login dan autentikasi pengguna dengan enkripsi password (tanpa batasan role).
+- CRUD Lengkap (Tambah, Lihat, Edit, Hapus) untuk Master Produk HP, Pelanggan, dan Supplier.
+- CRUD Lengkap Pembelian HP (Kulak): Form pembelian otomatis membuat data unit ber-IMEI, detail pembelian, serta mutasi stok masuk dalam transaksi database atomik (ACID). Dilengkapi fitur edit dan pembatalan transaksi dengan proteksi jika unit sudah terjual.
+- CRUD Lengkap Penjualan HP: Pilihan unit ready stock dengan kalkulasi otomatis profit/laba rugi, update status unit menjadi `sold`, mutasi stok keluar, edit transaksi penjualan, serta pembatalan yang mengembalikan stok unit menjadi `available`.
+- CRUD Lengkap Servis Unit: Pencatatan biaya perbaikan unit yang otomatis menambahkan modal dasar unit HP dan tercatat pada buku kas operasional, dengan fitur edit selisih biaya serta hapus/rollback servis.
+- Manajemen Kas (Cashflow), Inventory IMEI tracker, serta Laporan Penjualan komprehensif dengan ekspor Excel dan cetak PDF.
 
 ### Akun pertama
 

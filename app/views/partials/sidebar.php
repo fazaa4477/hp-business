@@ -1,6 +1,6 @@
 <?php
 $currentPage = $page ?? 'dashboard';
-$user = $_SESSION['user'] ?? ['name' => 'Admin HP', 'email' => 'admin@hpbusiness.com', 'role' => 'admin'];
+$user = $_SESSION['user'] ?? ['name' => 'Irtadho zainul falah', 'email' => 'irtadhozainulfalah@gmail.com', 'role' => 'owner'];
 $userInitial = strtoupper(substr($user['name'], 0, 1));
 ?>
 <aside class="sidebar" id="sidebar">

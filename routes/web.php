@@ -56,6 +56,16 @@ return [
     'POST /services/update' => [BusinessController::class, 'updateService'],
     'POST /services/delete' => [BusinessController::class, 'deleteService'],
 
+    // CRUD: Inventory Units (IMEI & Kondisi Fisik)
+    'GET /inventory/edit' => [BusinessController::class, 'editUnit'],
+    'POST /inventory/update' => [BusinessController::class, 'updateUnit'],
+    'POST /inventory/delete' => [BusinessController::class, 'deleteUnit'],
+
+    // CRUD: Finance Transactions (Kas Operasional)
+    'GET /finance/edit' => [BusinessController::class, 'editFinance'],
+    'POST /finance/update' => [BusinessController::class, 'updateFinance'],
+    'POST /finance/delete' => [BusinessController::class, 'deleteFinance'],
+
     // EXPORT: Reports
     'GET /reports/export/excel' => [BusinessController::class, 'exportExcel'],
     'GET /reports/export/pdf' => [BusinessController::class, 'exportPdf'],

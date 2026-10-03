@@ -537,6 +537,7 @@ $pageTitleShort = $labels[$page] ?? ucfirst($page);
                                 <th>MODAL AKHIR</th>
                                 <th>HARGA JUAL</th>
                                 <th>STATUS</th>
+                                <th class="text-center">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -568,11 +569,29 @@ $pageTitleShort = $labels[$page] ?? ucfirst($page);
                                                 <span class="badge pink"><?= strtoupper(e($r['status'])) ?></span>
                                             <?php endif; ?>
                                         </td>
+                                        <td class="text-center">
+                                            <div class="table-actions">
+                                                <a class="button mini-btn yellow" href="<?= e(url('inventory/edit?id=' . $r['id'])) ?>" title="Edit data unit HP &amp; kondisi">
+                                                    ✏ Edit
+                                                </a>
+                                                <?php if ($r['status'] !== 'sold'): ?>
+                                                    <form method="post" action="<?= e(url('inventory/delete')) ?>" onsubmit="return confirm('Hapus unit HP ini dari stok inventaris?');" style="display:inline;">
+                                                        <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+                                                        <input type="hidden" name="id" value="<?= e((string)$r['id']) ?>">
+                                                        <button type="submit" class="button mini-btn pink" title="Hapus unit">
+                                                            🗑 Hapus
+                                                        </button>
+                                                    </form>
+                                                <?php else: ?>
+                                                    <span class="muted-badge" title="Unit terjual">Terkunci</span>
+                                                <?php endif; ?>
+                                            </div>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="6" class="empty-state">
+                                    <td colspan="7" class="empty-state">
                                         <div class="empty-box">
                                             <span class="empty-icon">🔍</span>
                                             <p>Tidak ada unit yang cocok dengan pencarian.</p>
@@ -702,6 +721,48 @@ $pageTitleShort = $labels[$page] ?? ucfirst($page);
         <!-- FINANCE (KEUANGAN KAS) -->
         <!-- ========================================== -->
         <?php elseif ($page === 'finance'): ?>
+            <?php $fSum = $financeSummary ?? ['total_in' => 0, 'total_out' => 0, 'balance' => 0]; ?>
+            <section class="stats" aria-label="Ringkasan Kas Keuangan">
+                <article class="stat-card mint">
+                    <div class="stat-header">
+                        <span class="stat-title">TOTAL KAS MASUK</span>
+                        <span class="stat-corner-tag">↙ DEBIT</span>
+                    </div>
+                    <div class="stat-body">
+                        <span class="stat-number"><?= rupiah((float)$fSum['total_in']) ?></span>
+                    </div>
+                    <div class="stat-footer">
+                        <small class="stat-sub">Modal masuk &amp; penerimaan kas</small>
+                    </div>
+                </article>
+
+                <article class="stat-card pink">
+                    <div class="stat-header">
+                        <span class="stat-title">TOTAL KAS KELUAR</span>
+                        <span class="stat-corner-tag">↗ KREDIT</span>
+                    </div>
+                    <div class="stat-body">
+                        <span class="stat-number"><?= rupiah((float)$fSum['total_out']) ?></span>
+                    </div>
+                    <div class="stat-footer">
+                        <small class="stat-sub">Biaya operasional, servis &amp; prive</small>
+                    </div>
+                </article>
+
+                <article class="stat-card yellow">
+                    <div class="stat-header">
+                        <span class="stat-title">SALDO KAS BERSIH</span>
+                        <span class="stat-corner-tag">SALDO</span>
+                    </div>
+                    <div class="stat-body">
+                        <span class="stat-number"><?= rupiah((float)$fSum['balance']) ?></span>
+                    </div>
+                    <div class="stat-footer">
+                        <small class="stat-sub">Sisa kas fisik operasional tersedia</small>
+                    </div>
+                </article>
+            </section>
+
             <section class="form-card">
                 <div class="form-card-header">
                     <p class="eyebrow">CASHFLOW &amp; KAS BISNIS</p>
@@ -757,6 +818,7 @@ $pageTitleShort = $labels[$page] ?? ucfirst($page);
                                 <th>KETERANGAN</th>
                                 <th>ARUS KAS</th>
                                 <th>NOMINAL</th>
+                                <th class="text-center">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -775,11 +837,25 @@ $pageTitleShort = $labels[$page] ?? ucfirst($page);
                                             </span>
                                         </td>
                                         <td><b><?= rupiah((float)$r['amount']) ?></b></td>
+                                        <td class="text-center">
+                                            <div class="table-actions">
+                                                <a class="button mini-btn yellow" href="<?= e(url('finance/edit?id=' . $r['id'])) ?>" title="Edit transaksi kas">
+                                                    ✏ Edit
+                                                </a>
+                                                <form method="post" action="<?= e(url('finance/delete')) ?>" onsubmit="return confirm('Hapus transaksi kas ini?');" style="display:inline;">
+                                                    <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+                                                    <input type="hidden" name="id" value="<?= e((string)$r['id']) ?>">
+                                                    <button type="submit" class="button mini-btn pink" title="Hapus transaksi kas">
+                                                        🗑 Hapus
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="5" class="empty-state">
+                                    <td colspan="6" class="empty-state">
                                         <div class="empty-box">
                                             <span class="empty-icon">💵</span>
                                             <p>Belum ada catatan transaksi keuangan.</p>
@@ -799,8 +875,23 @@ $pageTitleShort = $labels[$page] ?? ucfirst($page);
             <?php
                 $totalOmset = array_sum(array_column($report, 'total_amount'));
                 $totalProfit = array_sum(array_column($report, 'profit'));
+                $totalExpenses = isset($financeSummary) ? (float)$financeSummary['total_out'] : 0;
             ?>
-            <section class="stats" aria-label="Ringkasan Penjualan">
+
+            <!-- OWNER IDENTITY HEADER -->
+            <div class="owner-header-card">
+                <div class="owner-header-left">
+                    <span class="badge yellow">👑 BISNIS OWNER</span>
+                    <h2 class="owner-name"><?= e($businessOwner ?? 'Irtadho zainul falah') ?></h2>
+                    <p class="owner-subtitle">Laporan Resmi Kinerja Finansial, Profitabilitas &amp; Operasional HP Business</p>
+                </div>
+                <div class="owner-header-right">
+                    <span class="badge mint">● TERVERIFIKASI DATABASE LIVE</span>
+                    <small class="owner-date-pill">📅 Periode: <?= date('F Y') ?></small>
+                </div>
+            </div>
+
+            <section class="stats stats-reports" aria-label="Ringkasan Penjualan">
                 <article class="stat-card yellow">
                     <div class="stat-header">
                         <span class="stat-title">TOTAL TRANSAKSI</span>
@@ -836,7 +927,20 @@ $pageTitleShort = $labels[$page] ?? ucfirst($page);
                         <span class="stat-number"><?= rupiah((float)$totalProfit) ?></span>
                     </div>
                     <div class="stat-footer">
-                        <small class="stat-sub">Margin keuntungan setelah dikurangi modal unit (HPP)</small>
+                        <small class="stat-sub">Margin laba setelah dikurangi modal unit (HPP)</small>
+                    </div>
+                </article>
+
+                <article class="stat-card blue">
+                    <div class="stat-header">
+                        <span class="stat-title">BIAYA OPERASIONAL &amp; KAS</span>
+                        <span class="stat-corner-tag">¤ BEBAN</span>
+                    </div>
+                    <div class="stat-body">
+                        <span class="stat-number"><?= rupiah((float)$totalExpenses) ?></span>
+                    </div>
+                    <div class="stat-footer">
+                        <small class="stat-sub">Beban pengeluaran kas &amp; servis tercatat</small>
                     </div>
                 </article>
             </section>

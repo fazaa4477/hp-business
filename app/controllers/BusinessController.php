@@ -38,7 +38,9 @@ class BusinessController
             'sales' => $this->business->sales(),
             'report' => $this->business->report(),
             'finances' => $this->business->finances(),
+            'financeSummary' => $this->business->financeSummary(),
             'services' => $this->business->services(),
+            'businessOwner' => 'Irtadho zainul falah',
             'editItem' => null,
             'editType' => null,
         ], $extra);
@@ -427,6 +429,106 @@ class BusinessController
     }
 
     // ==========================================
+    // CRUD: INVENTORY UNITS
+    // ==========================================
+    public function editUnit(): void
+    {
+        require_auth();
+        $id = (int)($_GET['id'] ?? 0);
+        $unit = $this->business->findUnit($id);
+        if (!$unit) {
+            flash('Data unit HP tidak ditemukan.');
+            redirect('inventory');
+        }
+
+        render('app/edit', [
+            'pageTitle' => 'Edit Unit HP — HP Business',
+            'editType' => 'unit',
+            'item' => $unit,
+            'page' => 'inventory',
+            'flash' => flash(),
+        ]);
+    }
+
+    public function updateUnit(): void
+    {
+        require_auth();
+        verify_csrf();
+        $id = (int)($_POST['id'] ?? 0);
+        try {
+            $this->business->updateUnit($id, $_POST);
+            flash('Data unit HP berhasil diperbarui.');
+        } catch (Throwable $e) {
+            flash('Gagal memperbarui unit HP: ' . $e->getMessage());
+        }
+        redirect('inventory');
+    }
+
+    public function deleteUnit(): void
+    {
+        require_auth();
+        verify_csrf();
+        $id = (int)($_POST['id'] ?? 0);
+        try {
+            $this->business->deleteUnit($id);
+            flash('Unit HP berhasil dihapus dari inventaris.');
+        } catch (Throwable $e) {
+            flash('Gagal menghapus unit: ' . $e->getMessage());
+        }
+        redirect('inventory');
+    }
+
+    // ==========================================
+    // CRUD: FINANCE TRANSACTIONS
+    // ==========================================
+    public function editFinance(): void
+    {
+        require_auth();
+        $id = (int)($_GET['id'] ?? 0);
+        $finance = $this->business->findFinance($id);
+        if (!$finance) {
+            flash('Data transaksi kas tidak ditemukan.');
+            redirect('finance');
+        }
+
+        render('app/edit', [
+            'pageTitle' => 'Edit Transaksi Kas — HP Business',
+            'editType' => 'finance',
+            'item' => $finance,
+            'page' => 'finance',
+            'flash' => flash(),
+        ]);
+    }
+
+    public function updateFinance(): void
+    {
+        require_auth();
+        verify_csrf();
+        $id = (int)($_POST['id'] ?? 0);
+        try {
+            $this->business->updateFinance($id, $_POST);
+            flash('Data transaksi kas berhasil diperbarui.');
+        } catch (Throwable $e) {
+            flash('Gagal memperbarui transaksi kas: ' . $e->getMessage());
+        }
+        redirect('finance');
+    }
+
+    public function deleteFinance(): void
+    {
+        require_auth();
+        verify_csrf();
+        $id = (int)($_POST['id'] ?? 0);
+        try {
+            $this->business->deleteFinance($id);
+            flash('Transaksi kas berhasil dihapus.');
+        } catch (Throwable $e) {
+            flash('Gagal menghapus transaksi kas: ' . $e->getMessage());
+        }
+        redirect('finance');
+    }
+
+    // ==========================================
     // EXPORT: REPORTS (EXCEL & PDF/PRINT)
     // ==========================================
     public function exportExcel(): void
@@ -437,7 +539,8 @@ class BusinessController
         $purchases = $this->business->purchases();
         $services = $this->business->services();
         $finances = $this->business->finances();
-        $user = $_SESSION['user'] ?? ['name' => 'Administrator'];
+        $businessOwner = 'Irtadho zainul falah';
+        $user = $_SESSION['user'] ?? ['name' => 'Irtadho zainul falah', 'role' => 'owner'];
         $printedAt = date('d F Y, H:i') . ' WIB';
 
         $filename = 'Laporan_Bisnis_HP_' . date('Ymd_His') . '.xls';
@@ -458,7 +561,8 @@ class BusinessController
         $purchases = $this->business->purchases();
         $services = $this->business->services();
         $finances = $this->business->finances();
-        $user = $_SESSION['user'] ?? ['name' => 'Administrator'];
+        $businessOwner = 'Irtadho zainul falah';
+        $user = $_SESSION['user'] ?? ['name' => 'Irtadho zainul falah', 'role' => 'owner'];
         $printedAt = date('d F Y, H:i') . ' WIB';
 
         require __DIR__ . '/../views/reports/print.php';

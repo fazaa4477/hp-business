@@ -6,6 +6,8 @@ $labels = [
     'purchase' => ['Pembelian HP', 'purchases', 'purchases/update'],
     'sale' => ['Penjualan HP', 'sales', 'sales/update'],
     'service' => ['Servis Unit', 'services', 'services/update'],
+    'unit' => ['Unit HP & IMEI', 'inventory', 'inventory/update'],
+    'finance' => ['Transaksi Kas', 'finance', 'finance/update'],
 ];
 [$entityTitle, $returnRoute, $updateRoute] = $labels[$editType] ?? ['Data', 'products', 'products/update'];
 $pageTitleShort = 'EDIT ' . strtoupper($entityTitle);
@@ -154,6 +156,69 @@ $pageTitleShort = 'EDIT ' . strtoupper($entityTitle);
                             <input name="cost" type="number" min="1" value="<?= e((string)(int)$item['cost']) ?>" required>
                         </label>
                         <label class="grid-col-2">Keterangan / Rincian Servis
+                            <input name="description" value="<?= e($item['description']) ?>" required>
+                        </label>
+
+                    <?php elseif ($editType === 'unit'): ?>
+                        <div class="grid-col-full purchase-info-banner">
+                            <span class="badge yellow">ID UNIT: #<?= e((string)$item['id']) ?></span>
+                            <span class="badge blue">MODEL: <?= e(trim(($item['brand'] ?? '') . ' ' . ($item['model'] ?? ''))) ?></span>
+                            <span class="badge pink">MODAL AWAL: <?= rupiah((float)($item['purchase_price'] ?? 0)) ?></span>
+                        </div>
+                        <label>Nomor IMEI (10-20 Digit)
+                            <input name="imei" value="<?= e($item['imei']) ?>" minlength="10" maxlength="20" required>
+                        </label>
+                        <label>Status Unit
+                            <select name="status">
+                                <option value="available" <?= $item['status'] === 'available' ? 'selected' : '' ?>>Tersedia (Ready Stock)</option>
+                                <option value="sold" <?= $item['status'] === 'sold' ? 'selected' : '' ?>>Terjual (Sold)</option>
+                                <option value="damaged" <?= $item['status'] === 'damaged' ? 'selected' : '' ?>>Rusak / Butuh Servis (Damaged)</option>
+                                <option value="returned" <?= $item['status'] === 'returned' ? 'selected' : '' ?>>Retur (Returned)</option>
+                            </select>
+                        </label>
+                        <label>Target Harga Jual (Rp)
+                            <input name="selling_price" type="number" min="0" value="<?= e((string)(int)$item['selling_price']) ?>" required>
+                        </label>
+                        <label>Harga Modal Beli (Rp)
+                            <input name="purchase_price" type="number" min="0" value="<?= e((string)(int)$item['purchase_price']) ?>" required>
+                        </label>
+                        <label>Battery Health (%)
+                            <input name="battery_health" type="number" min="0" max="100" value="<?= e((string)($item['battery_health'] ?? '')) ?>" placeholder="Misal: 90">
+                        </label>
+                        <label>Kondisi Layar
+                            <input name="screen_condition" value="<?= e($item['screen_condition'] ?? '') ?>" placeholder="Misal: Normal / No Shadow">
+                        </label>
+                        <label>Kondisi Fisik / Body
+                            <input name="body_condition" value="<?= e($item['body_condition'] ?? '') ?>" placeholder="Misal: Mulus 98%">
+                        </label>
+                        <label class="grid-col-2">Kelengkapan Unit
+                            <input name="completeness" value="<?= e($item['completeness'] ?? '') ?>" placeholder="Misal: Fullset OEM / Unit Only">
+                        </label>
+                        <label class="grid-col-full">Catatan Kondisi Unit
+                            <textarea name="condition_notes" rows="2" placeholder="Catatan internal kondisi HP..."><?= e($item['condition_notes'] ?? '') ?></textarea>
+                        </label>
+
+                    <?php elseif ($editType === 'finance'): ?>
+                        <div class="grid-col-full purchase-info-banner">
+                            <span class="badge yellow">KODE: <?= e($item['transaction_code']) ?></span>
+                            <span class="badge <?= $item['cash_flow'] === 'in' ? 'sale' : 'buy' ?>">ARUS KAS: <?= strtoupper(e($item['cash_flow'])) ?></span>
+                        </div>
+                        <label>Jenis Transaksi Kas
+                            <select name="transaction_type" required>
+                                <option value="expense" <?= $item['transaction_type'] === 'expense' ? 'selected' : '' ?>>Pengeluaran Operasional (Kas Keluar)</option>
+                                <option value="capital" <?= $item['transaction_type'] === 'capital' ? 'selected' : '' ?>>Modal Masuk Tambahan (Kas Masuk)</option>
+                                <option value="withdrawal" <?= $item['transaction_type'] === 'withdrawal' ? 'selected' : '' ?>>Prive Pemilik (Kas Keluar)</option>
+                                <option value="adjustment" <?= $item['transaction_type'] === 'adjustment' ? 'selected' : '' ?>>Penyesuaian Kas Fisik</option>
+                                <option value="service" <?= $item['transaction_type'] === 'service' ? 'selected' : '' ?>>Biaya Servis</option>
+                            </select>
+                        </label>
+                        <label>Nominal Transaksi (Rp)
+                            <input name="amount" type="number" min="1" value="<?= e((string)(int)$item['amount']) ?>" required>
+                        </label>
+                        <label>Tanggal Transaksi
+                            <input name="transaction_date" type="date" value="<?= e($item['transaction_date']) ?>" required>
+                        </label>
+                        <label class="grid-col-full">Keterangan Lengkap Transaksi
                             <input name="description" value="<?= e($item['description']) ?>" required>
                         </label>
                     <?php endif; ?>
